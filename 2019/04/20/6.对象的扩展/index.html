@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>
+    对象的扩展 |
+    
+    老杨</title>
+  
+  <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<script src="/js/pace.min.js"></script>
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <main class="content">
+    <section class="outer">
+  <article id="post-6.对象的扩展" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+      
+
+<h1 class="article-title" itemprop="name">
+  对象的扩展
+</h1>
+
+
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/04/20/6.%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%89%A9%E5%B1%95/" class="article-date">
+  <time datetime="2019-04-19T16:00:00.000Z" itemprop="datePublished">2019-04-20</time>
+</a>
+      
+    </div>
+    
+
+    
+    
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+      
+      
+      <ol>
+<li><p>属性的简洁表示法</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> x = <span class="string">&#x27;xxx&#x27;</span></span><br><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">    x,</span><br><span class="line">    <span class="function"><span class="title">say</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="built_in">this</span>.name)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>属性名的表达式</p>
+<blockquote>
+<p>用表达式作为属性名，要将表达式放在方括号之内</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">let</span> propKey = <span class="string">&#x27;a&#x27;</span>;</span><br><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">  [propKey]: <span class="literal">true</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 还可以作为属性名</span></span><br><span class="line">  [<span class="string">&#x27;a&#x27;</span> + <span class="string">&#x27;b&#x27;</span>]: <span class="number">123</span>,</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 还可以做为函数名</span></span><br><span class="line">  [<span class="string">&#x27;h&#x27;</span> + <span class="string">&#x27;ello&#x27;</span>]() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;hi&#x27;</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">obj[<span class="string">&#x27;a&#x27;</span> + <span class="string">&#x27;bc&#x27;</span>] = <span class="number">123</span>;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<ol start="3">
+<li>属性的可枚举性和遍历<blockquote>
+<p>可枚举性：对象的每个属性都有一个描述对象，用来控制该属性的行为<br>使用Object.getOwnPropertyDescriptor方法可以获取属性的描述对象</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">    foo: <span class="string">&#x27;value&#x27;</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> desc = <span class="built_in">Object</span>.getOwnPropertyDescriptor(obj, <span class="string">&#x27;foo&#x27;</span>);</span><br><span class="line">&#123;</span><br><span class="line">    configurable: <span class="literal">true</span>, <span class="comment">// 是否可配置</span></span><br><span class="line">    enumerable: <span class="literal">true</span>, <span class="comment">// 是否可枚举</span></span><br><span class="line">    value: <span class="string">&quot;value&quot;</span>, <span class="comment">// 值</span></span><br><span class="line">    writable: <span class="literal">true</span> <span class="comment">// 是否可写</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>四个操作会忽略enumerable为false的属性</p>
+<ol>
+<li>for…in循环：只遍历对象自身的和继承的可枚举的属性。</li>
+<li>Object.keys()：返回对象自身的所有可枚举的属性的键名。</li>
+<li>JSON.stringify()：只串行化对象自身的可枚举的属性。</li>
+<li>Object.assign()： 忽略enumerable为false的属性，只拷贝对象自身的可枚举的属性</li>
+</ol>
+<p>遍历属性的五种方法</p>
+<ol>
+<li><p>for…in</p>
+<blockquote>
+<p>for…in循环遍历对象自身的和继承的可枚举属性（不含 Symbol 属性）</p>
+</blockquote>
+</li>
+<li><p>Object.keys(obj)</p>
+<blockquote>
+<p>Object.keys返回一个数组，包括对象自身的（不含继承的）所有可枚举属性（不含 Symbol 属性）的键名</p>
+</blockquote>
+</li>
+<li><p>Object.getOwnPropertyNames(obj)</p>
+<blockquote>
+<p>Object.getOwnPropertyNames返回一个数组，包含对象自身的所有属性（不含 Symbol 属性，但是包括不可枚举属性）的键名</p>
+</blockquote>
+</li>
+<li><p>Object.getOwnPropertySymbols(obj)</p>
+<blockquote>
+<p>Object.getOwnPropertySymbols返回一个数组，包含对象自身的所有 Symbol 属性的键名</p>
+</blockquote>
+</li>
+<li><p>Reflect.ownKeys(obj)</p>
+<blockquote>
+<p>Reflect.ownKeys返回一个数组，包含对象自身的所有键名，不管键名是 Symbol 或字符串，也不管是否可枚举</p>
+</blockquote>
+</li>
+</ol>
+<p>以上的 5 种方法遍历对象的键名，都遵守同样的属性遍历的次序规则:<br>    首先遍历所有数值键，按照数值升序排列。<br>    其次遍历所有字符串键，按照加入时间升序排列。<br>    最后遍历所有 Symbol 键，按照加入时间升序排列。</p>
+<ol start="4">
+<li>super关键字<blockquote>
+<p>this关键字总是指向函数所在的当前对象<br>ES6 又新增了另一个类似的关键字super，指向当前对象的原型对象<br> 只能用在对象的方法之中，用在其他地方都会报错</p>
+</blockquote>
+</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> proto = &#123;</span><br><span class="line">  foo: <span class="string">&#x27;hello&#x27;</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> obj = &#123;</span><br><span class="line">  foo: <span class="string">&#x27;world&#x27;</span>,</span><br><span class="line">  <span class="function"><span class="title">find</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">super</span>.foo;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 设置对象的原型</span></span><br><span class="line"><span class="built_in">Object</span>.setPrototypeOf(obj, proto);</span><br><span class="line">obj.find() <span class="comment">// &quot;hello&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>对象的扩展运算符<br>解构赋值<blockquote>
+<p>对象的解构赋值用于从一个对象取值，相当于将目标对象自身的所有可遍历的（enumerable）、但尚未被读取的属性，分配到指定的对象上面<br>所有的键和它们的值，都会拷贝到新对象上面<br>注： </p>
+</blockquote>
+</li>
+<li>解构赋值必须是最后一个参数</li>
+<li>解构赋值的拷贝是浅拷贝<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> &#123; x, y, ...z &#125; = &#123; <span class="attr">x</span>: <span class="number">1</span>, <span class="attr">y</span>: <span class="number">2</span>, <span class="attr">a</span>: <span class="number">3</span>, <span class="attr">b</span>: <span class="number">4</span> &#125;;</span><br><span class="line">x <span class="comment">// 1</span></span><br><span class="line">y <span class="comment">// 2</span></span><br><span class="line">z <span class="comment">// &#123; a: 3, b: 4 &#125;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>扩展运算符</p>
+<blockquote>
+<p>对象的扩展运算符（…）用于取出参数对象的所有可遍历属性，拷贝到当前对象之中</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> z = &#123; <span class="attr">a</span>: <span class="number">3</span>, <span class="attr">b</span>: <span class="number">4</span> &#125;;</span><br><span class="line"><span class="keyword">let</span> n = &#123; ...z &#125;;</span><br><span class="line">n <span class="comment">// &#123; a: 3, b: 4 &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 数组比较特殊</span></span><br><span class="line"><span class="keyword">let</span> foo = &#123; ...[<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>, <span class="string">&#x27;c&#x27;</span>] &#125;;</span><br><span class="line">foo</span><br><span class="line"><span class="comment">// &#123;0: &quot;a&quot;, 1: &quot;b&quot;, 2: &quot;c&quot;&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 扩展运算符后面是一个空对象，则没有任何效果</span></span><br><span class="line">&#123;...&#123;&#125;, <span class="attr">a</span>: <span class="number">1</span>&#125;</span><br><span class="line"><span class="comment">// &#123; a: 1 &#125;</span></span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/04/20/6.%E5%AF%B9%E8%B1%A1%E7%9A%84%E6%89%A9%E5%B1%95/" data-id="ckmgdlcoo000a3swc480ieg2k" class="article-share-link">
+        Share
+      </a>
+      
+    </footer>
+
+  </div>
+
+  
+  
+<nav class="article-nav">
+  
+  <a href="/2019/06/07/7.%E5%AF%B9%E8%B1%A1%E4%B8%8A%E7%9A%84%E6%89%A9%E5%B1%95%E6%96%B9%E6%B3%95/" class="article-nav-link">
+    <strong class="article-nav-caption">Newer</strong>
+    <div class="article-nav-title">
+      
+      对象的扩展
+      
+    </div>
+  </a>
+  
+  
+  <a href="/2019/04/06/5.%E5%87%BD%E6%95%B0%E7%9A%84%E6%89%A9%E5%B1%95/" class="article-nav-link">
+    <strong class="article-nav-caption">Older</strong>
+    <div class="article-nav-title">函数的扩展</div>
+  </a>
+  
+</nav>
+
+  
+
+  
+  
+  
+  
+
+</article>
+</section>
+    <footer class="footer">
+  <div class="outer">
+    <div class="float-right">
+      <ul class="list-inline">
+  
+  <li><i class="fe fe-smile-alt"></i> <span id="busuanzi_value_site_uv"></span></li>
+  
+  <li><i class="fe fe-bookmark"></i> <span id="busuanzi_value_page_pv"></span></li>
+  
+</ul>
+    </div>
+    <ul class="list-inline">
+      <li>老杨 &copy; 2021</li>
+      
+        <li>京ICP备17054916号-2</li>
+      
+      <li>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></li>
+      <li>theme  <a target="_blank" rel="noopener" href="https://github.com/zhwangart/hexo-theme-ocean">Ocean</a></li>
+    </ul>
+  </div>
+</footer>
+  </main>
+  <aside class="sidebar">
+    <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/hexo.svg" alt="老杨"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">首页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link nav-item-search" title="Search">
+        <i class="fe fe-search"></i>
+        Search
+      </a>
+    </li>
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      <div class="totop" id="totop">
+  <i class="fe fe-rocket"></i>
+</div>
+    </li>
+    <li class="nav-item">
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+  </aside>
+  
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/copybtn.js"></script>
+
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+  });
+</script>
+
+
+
+<script src="/js/ocean.js"></script>
+
+</body>
+
+</html>
